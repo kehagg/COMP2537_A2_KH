@@ -30,6 +30,8 @@ var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
+app.set('view engine', 'ejs');
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use(mongoSanitize(
@@ -217,16 +219,7 @@ app.get('/signupSubmit', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-    var html = `
-    create user
-    <form action='/signup' method='post'>
-    <div><input name='username' type='text' placeholder='name'></div>
-    <div><input name='email' type='text' placeholder='email'></div>
-    <div><input name='password' type='password' placeholder='password'></div>
-    <button>Submit</button>
-    </form>
-    `;
-    res.send(html);
+    res.render("signup");
 });
 
 app.post('/submitEmail', (req, res) => {
