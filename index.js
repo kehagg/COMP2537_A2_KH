@@ -77,21 +77,19 @@ app.get('/', (req, res) => {
     res.send(html);
 });
 
+
 app.get('/members', (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
     } else {
         var images = ['duck.gif', 'frog.gif', 'spongebob.gif'];
         var index = Math.floor(Math.random() * images.length);
-        var html = `
-        <h1>Hello, ${req.session.username}!</h1>
-
-        <img src='/${images[index]}' height='200px'>
-
-        <div><button onclick="window.location.href='/logout'">Logout</button></div>
-        `;
+        var result = {
+            username: req.session.username,
+            image: images[index]
+        };
+        res.render('members', result);
     }
-    res.send(html);
 });
 
 app.get('/nosql-injection', async (req, res) => {
