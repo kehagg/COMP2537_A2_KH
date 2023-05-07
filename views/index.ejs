@@ -1,0 +1,12 @@
+<%- include("templates/header") %>
+
+<% if (!authenticated) { %>
+    <div><button onclick="window.location.href='/signup'">Sign Up</button></div>
+    <div><button onclick="window.location.href='/login'">Log In</button></div>
+<% } else { %>
+    <div>Hello, <%= username %>!</div>
+    <div><button onclick="window.location.href='/members'">Go to Members Area</button></div>
+    <div><button onclick="window.location.href='/logout'">Logout</button></div>
+<% } %>
+
+<%- include("templates/footer") %>

@@ -62,19 +62,10 @@ app.use(session({
 ));
 
 app.get('/', (req, res) => {
-    if (!req.session.authenticated) {
-        var html = `
-        <div><button onclick="window.location.href='/signup'">Sign Up</button></div>
-        <div><button onclick="window.location.href='/login'">Log In</button></div>
-        `;
-    } else {
-        var html = `
-        <div>Hello, ${req.session.username}!</div>
-        <div><button onclick="window.location.href='/members'">Go to Members Area</button></div>
-        <div><button onclick="window.location.href='/logout'">Logout</button></div>
-        `;
-    }
-    res.send(html);
+    res.render('index', {
+        authenticated: req.session.authenticated,
+        username: req.session.username
+    });
 });
 
 function isValidSession(req) {
@@ -123,52 +114,8 @@ app.get('/members', (req, res) => {
 });
 
 app.get('/signupSubmit', (req, res) => {
-    var html = `error`;
     var missing = req.query.missing;
-    if (missing == 1) {
-        var html = `
-        Name, email, and password are required.
-        <br><br>
-        <a href='/signup'>Try Again</a>
-    `;
-    } else if (missing == 2) {
-        var html = `
-        Name and email are required.
-        <br><br>
-        <a href='/signup'>Try Again</a>    
-    `;
-    } else if (missing == 3) {
-        var html = `
-        Name and password are required.
-        <br><br>
-        <a href='/signup'>Try Again</a>    
-    `;
-    } else if (missing == 4) {
-        var html = `
-        Email and password are required.
-        <br><br>
-        <a href='/signup'>Try Again</a>
-    `;
-    } else if (missing == 5) {
-        var html = `
-        Name is required.
-        <br><br>
-        <a href='/signup'>Try Again</a>
-    `;
-    } else if (missing == 6) {
-        var html = `
-        Email is required.
-        <br><br>
-        <a href='/signup'>Try Again</a>
-    `;
-    } else if (missing == 7) {
-        var html = `
-        Password is required.
-        <br><br>
-        <a href='/signup'>Try Again</a>
-    `;
-    }
-    res.send(html);
+    res.render('signupSubmit', { missing: missing });
 });
 
 app.get('/signup', (req, res) => {
@@ -186,15 +133,7 @@ app.post('/submitEmail', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    var html = `
-    Log in
-    <form action='/loggingin' method='post'>
-    <div><input name='email' type='text' placeholder='email'></div>
-    <div><input name='password' type='password' placeholder='password'></div>
-    <button>Submit</button>
-    </form>
-    `;
-    res.send(html);
+    res.render('login');
 });
 
 app.get('/loginSubmit', (req, res) => {
@@ -315,22 +254,6 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
-
-app.get('/cat/:id', (req, res) => {
-
-    var cat = req.params.id;
-
-    if (cat == 1) {
-        res.send("Fluffy: <img src='/fluffy.gif' style='width:250px;'>");
-    }
-    else if (cat == 2) {
-        res.send("Socks: <img src='/socks.gif' style='width:250px;'>");
-    }
-    else {
-        res.send("Invalid cat id: " + cat);
-    }
-});
-
 
 app.use(express.static(__dirname + "/public"));
 

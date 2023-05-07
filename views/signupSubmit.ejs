@@ -1,0 +1,22 @@
+<%- include("templates/header") %>
+
+<% if (missing == 1) { %>
+    Name, email, and password are required.
+<% } else if (missing == 2) { %>
+    Name and email are required.
+<% } else if (missing == 3) { %>
+    Name and password are required.
+<% } else if (missing == 4) { %>
+    Email and password are required.
+<% } else if (missing == 5) { %>
+    Name is required.
+<% } else if (missing == 6) { %>
+    Email is required.
+<% } else if (missing == 7) { %>
+    Password is required.
+<% } %>
+
+<br><br>
+<a href='/signup'>Try Again</a>
+
+<%- include("templates/footer") %>
