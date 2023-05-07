@@ -242,22 +242,8 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/loginSubmit', (req, res) => {
-    var missing = req.query.missing;
-    var html = `error`;
-    if (missing == 1) {
-        var html = `
-        User not found.
-        <br><br>
-        <a href='/login'>Try Again</a>
-        `;
-    } else if (missing == 2) {
-        var html = `
-        Invalid password.
-        <br><br>
-        <a href='/login'>Try Again</a>
-        `;
-    }
-    res.send(html);
+    const missing = req.query.missing;
+    res.render('loginSubmit', { missing: missing });
 });
 
 app.post('/signup', async (req, res) => {
@@ -372,7 +358,6 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
-
 
 app.get('/cat/:id', (req, res) => {
 
