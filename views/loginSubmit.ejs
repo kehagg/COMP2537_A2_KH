@@ -1,0 +1,8 @@
+<%- include("templates/header") %>
+    <% if (missing==1) { %>
+        <p>User not found.</p>
+    <% } else if (missing==2) { %>
+        <p>Invalid password.</p>
+    <% } %>
+    <a href="/login">Try Again</a>
+<%- include("templates/footer") %>
