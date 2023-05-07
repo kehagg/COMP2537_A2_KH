@@ -77,7 +77,33 @@ app.get('/', (req, res) => {
     res.send(html);
 });
 
-app.get('/admin', async (req, res) => {
+function isValidSession(req) {
+    return req.session.authenticated;
+}
+
+function sessionValidation(req, res, next) {
+    if (isValidSession(req)) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
+function isAdmin(req) {
+    return req.session.user_type == 'admin';
+}
+
+function adminAuthorization(req, res, next) {
+    if (!isAdmin(req)) {
+        res.status(403);
+        res.render("errorMessage", { error: "Not authorized" });
+        return;
+    } else {
+        next();
+    }
+}
+
+app.get('/admin', sessionValidation, adminAuthorization, async (req, res) => {
     const result = await userCollection.find().project({ username: 1, _id: 1 }).toArray();
     res.render('admin', { users: result });
 });
@@ -276,6 +302,7 @@ app.post('/loggingin', async (req, res) => {
     }
 });
 
+app.use('/loggedin', sessionValidation);
 app.get('/loggedIn', (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/login');
