@@ -77,6 +77,11 @@ app.get('/', (req, res) => {
     res.send(html);
 });
 
+app.get('/admin', async (req, res) => {
+    const result = await userCollection.find().project({ username: 1, _id: 1 }).toArray();
+    res.render('admin', { users: result });
+});
+
 app.get('/members', (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
@@ -90,81 +95,6 @@ app.get('/members', (req, res) => {
         res.render('members', result);
     }
 });
-
-// app.get('/nosql-injection', async (req, res) => {
-//     var name = req.query.user;
-
-//     if (!name) {
-//         res.send(`<h3>no user provided - try /nosql-injection?user=name</h3> <h3>or /nosql-injection?user[$ne]=name</h3>`);
-//         return;
-//     }
-//     //console.log("user: "+name);
-
-//     const schema = Joi.string().max(100).required();
-//     const validationResult = schema.validate(name);
-
-//     var invalid = false;
-//     //If we didn't use Joi to validate and check for a valid URL parameter below
-//     // we could run our userCollection.find and it would be possible to attack.
-//     // A URL parameter of user[$ne]=name would get executed as a MongoDB command
-//     // and may result in revealing information about all users or a successful
-//     // login without knowing the correct password.
-//     if (validationResult.error != null) {
-//         invalid = true;
-//         console.log(validationResult.error);
-//         //    res.send("<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>");
-//         //    return;
-//     }
-//     var numRows = -1;
-//     //var numRows2 = -1;
-//     try {
-//         const result = await userCollection.find({ name: name }).project({ username: 1, password: 1, _id: 1 }).toArray();
-//         //const result2 = await userCollection.find("{name: "+name).project({username: 1, password: 1, _id: 1}).toArray(); //mongoDB already prevents using catenated strings like this
-//         //console.log(result);
-//         numRows = result.length;
-//         //numRows2 = result2.length;
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.send(`<h1>Error querying db</h1>`);
-//         return;
-//     }
-
-//     console.log(`invalid: ${invalid} - numRows: ${numRows} - user: `, name);
-
-//     // var query = {
-//     //     $where: "this.name === '" + req.body.username + "'"
-//     // }
-
-//     // const result2 = await userCollection.find(query).toArray(); //$where queries are not allowed.
-
-//     // console.log(result2);
-
-//     res.send(`<h1>Hello</h1> <h3> num rows: ${numRows}</h3>`);
-//     //res.send(`<h1>Hello</h1>`);
-
-// });
-
-// app.get('/about', (req, res) => {
-//     var color = req.query.color;
-
-//     res.send("<h1 style='color:" + color + ";'>Patrick Guichon</h1>");
-// });
-
-// app.get('/contact', (req, res) => {
-//     var missingEmail = req.query.missing;
-//     var html = `
-//         email address:
-//         <form action='/submitEmail' method='post'>
-//             <input name='email' type='text' placeholder='email'>
-//             <button>Submit</button>
-//         </form>
-//     `;
-//     if (missingEmail) {
-//         html += "<br> email is required";
-//     }
-//     res.send(html);
-// });
 
 app.get('/signupSubmit', (req, res) => {
     var html = `error`;

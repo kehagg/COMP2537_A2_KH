@@ -2,7 +2,7 @@
     <div>Users:</div>
     <ul>
         <% for(i=0; i < users.length; i++) { %>
-        <%- include("templates/user", {user: users[i]}) %>
+            <%- include("templates/user", {user: users[i]}) %>
         <% } %>
     </ul>
 <%- include("templates/footer") %>
