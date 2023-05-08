@@ -15,6 +15,7 @@ const app = express();
 const Joi = require("joi");
 const mongoSanitize = require('express-mongo-sanitize');
 const { emit } = require("process");
+const { type } = require("os");
 const expireTime = 60 * 60 * 1000; //expires after 1 hour  (minutes * seconds * millis)
 
 /* secret information section */
@@ -122,6 +123,14 @@ app.get('/signup', (req, res) => {
     res.render("signup");
 });
 
+
+app.post('/admin', async (req, res) => {
+    console.log(req.body.userName);
+    await userCollection.updateOne({ username: req.body.userName }, { $set: { user_type: req.body.userType } });
+    req.session.user_type = req.body.userType;
+    res.redirect('/admin');
+});
+
 app.post('/submitEmail', (req, res) => {
     var email = req.body.email;
     if (!email) {
@@ -193,7 +202,22 @@ app.post('/signup', async (req, res) => {
 
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    await userCollection.insertOne({ username: username, email: email, password: hashedPassword });
+    // To add admin user
+
+    // await userCollection.insertOne({
+    //     username: username, email: email, password: hashedPassword,
+    //     user_type: 'admin'
+    // });
+    // req.session.user_type = 'admin';
+    // console.log("Inserted admin");
+
+    // To add regular user
+
+    await userCollection.insertOne({
+        username: username, email: email, password: hashedPassword,
+        user_type: 'user'
+    });
+    req.session.user_type = 'user';
     console.log("Inserted user");
 
     req.session.authenticated = true;
@@ -216,7 +240,7 @@ app.post('/loggingin', async (req, res) => {
         return;
     }
 
-    const result = await userCollection.find({ email: email }).project({ username: 1, email: 1, password: 1, _id: 1 }).toArray();
+    const result = await userCollection.find({ email: email }).project({ username: 1, email: 1, password: 1, _id: 1, user_type: 1 }).toArray();
 
     console.log(result);
     if (result.length != 1) {
@@ -230,6 +254,8 @@ app.post('/loggingin', async (req, res) => {
         req.session.email = email;
         req.session.username = result[0].username;
         req.session.cookie.maxAge = expireTime;
+        req.session.user_type = result[0].user_type;
+        console.log(result[0].user_type);
 
         res.redirect('/loggedIn');
         return;

@@ -1,3 +1,8 @@
 <li>
     <%= user.username %>
+        <form action="/admin" method="POST">
+            <button class="user-type-toggle" name="userType" value="user">User</button>
+            <button class="user-type-toggle" name="userType" value="admin">Admin</button>
+            <input type="hidden" name="userName" value="<%= user.username %>">
+        </form>
 </li>
