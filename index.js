@@ -104,11 +104,11 @@ app.get('/members', (req, res) => {
     if (!req.session.authenticated) {
         res.redirect('/');
     } else {
-        var images = ['duck.gif', 'frog.gif', 'spongebob.gif'];
-        var index = Math.floor(Math.random() * images.length);
         var result = {
             username: req.session.username,
-            image: images[index]
+            image1: 'duck.gif',
+            image2: 'frog.gif',
+            image3: 'spongebob.gif'
         };
         res.render('members', result);
     }
