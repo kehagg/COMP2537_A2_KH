@@ -88,7 +88,7 @@ function isAdmin(req) {
 function adminAuthorization(req, res, next) {
     if (!isAdmin(req)) {
         res.status(403);
-        res.render("errorMessage", { error: "Not authorized - 403" });
+        res.render("errorMessage", { error: "Not authorized - 403." });
         return;
     } else {
         next();
