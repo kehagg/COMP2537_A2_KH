@@ -88,7 +88,7 @@ function isAdmin(req) {
 function adminAuthorization(req, res, next) {
     if (!isAdmin(req)) {
         res.status(403);
-        res.render("errorMessage", { error: "Not authorized" });
+        res.render("errorMessage", { error: "Not authorized - 403" });
         return;
     } else {
         next();
@@ -127,7 +127,9 @@ app.get('/signup', (req, res) => {
 app.post('/admin', async (req, res) => {
     console.log(req.body.userName);
     await userCollection.updateOne({ username: req.body.userName }, { $set: { user_type: req.body.userType } });
-    req.session.user_type = req.body.userType;
+    if (req.body.userName == req.session.username) {
+        req.session.user_type = req.body.userType;
+    }
     res.redirect('/admin');
 });
 
